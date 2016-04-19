@@ -47,6 +47,18 @@ app.config(function ($routeProvider) {
     //    title: 'Delete Ad'
     //});
 
+    $routeProvider.when('/profile', {
+        templateUrl: 'templates/user/edit-profile.html',
+        controller: 'UserEditProfileController',
+        title: 'Edit Profile'
+    });
+
+    $routeProvider.when('/projects', {
+        templateUrl: 'templates/partial/projects.html',
+        controller: 'ProjectsGetAllController',
+        title: 'Projects'
+    });
+
     $routeProvider.otherwise({
         redirectTo: '/'
     });

@@ -1,0 +1,35 @@
+<div class="form-control">
+    <dvi class="row">
+        <div class="col-md-6 form-group form-margin">
+            <h2>Edit Profile</h2>
+            <p>
+                <label for="email">Email:</label>
+                <input type="text" class="form-control" id="email" ng-model="userData.Username" required>
+            </p>
+            <p>
+                <a ng-click="updateProfile(userData)" class="btn btn-primary">Update</a>
+                <a href="#/" class="btn btn-default">Cancel</a>
+            </p>
+        </div>
+        <div class="col-md-6 form-group form-margin">
+            <h2>Change Password</h2>
+            <p>
+                <label for="oldPassword">Old Password:</label>
+                <input type="password" id="oldPassword" class="form-control" ng-model="passData.oldPassword" required>
+            </p>
+            <p>
+                <label for="newPassword">Password:</label>
+                <input type="password" id="newPassword" class="form-control" ng-model="passData.newPassword" required>
+            </p>
+            <p>
+                <label for="confirmPassword">Confirm Password:</label>
+                <input type="password" id="confirmPassword" class="form-control" ng-model="passData.confirmPassword" required>
+            </p>
+            <p>
+                <a ng-click="changePassword(passData)" class="btn btn-primary">Change Password</a>
+                <a href="#/" class="btn btn-default">Cancel</a>
+            </p>
+        </div>
+    </dvi>
+
+</div>

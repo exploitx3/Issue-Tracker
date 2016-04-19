@@ -176,7 +176,7 @@ function $RouteProvider(){
     * Normalizes the given path, returning a regular expression
     * and the original path.
     *
-    * Inspired by pathRexp in visionmedia/express/libs/utils.js.
+    * Inspired by pathRexp in visionmedia/express/lib/utils.js.
     */
   function pathRegExp(path, opts) {
     var insensitive = opts.caseInsensitiveMatch,
@@ -489,7 +489,7 @@ function $RouteProvider(){
      * Check if the route matches the current url.
      *
      * Inspired by match in
-     * visionmedia/express/libs/router/router.js.
+     * visionmedia/express/lib/router/router.js.
      */
     function switchRouteMatcher(on, route) {
       var keys = route.keys,
