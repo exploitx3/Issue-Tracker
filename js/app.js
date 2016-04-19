@@ -1,5 +1,5 @@
 "use strict";
-var app = angular.module('app', ['ngRoute']);
+var app = angular.module('app', ['ngRoute', 'angular-loading-bar']);
 app.constant('baseServiceUrl', 'http://softuni-issue-tracker.azurewebsites.net');
 app.constant('pageSize', 3);
 app.config(function ($routeProvider) {
