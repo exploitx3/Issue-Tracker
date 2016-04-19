@@ -1,0 +1,23 @@
+<form class="form-horizontal">
+    <fieldset>
+        <legend><h3>Login</h3></legend>
+        <div class="form-group">
+            <label for="email" class="col-lg-2 control-label">Email</label>
+            <div class="col-lg-10">
+                <input type="text" class="form-control" id="email" placeholder="Email" ng-model="userData.username">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="password" class="col-lg-2 control-label">Password</label>
+            <div class="col-lg-10">
+                <input type="password" class="form-control" id="password" placeholder="Password" ng-model="userData.password">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-lg-10 col-lg-offset-2">
+                <a ng-click="login(userData)" class="btn btn-primary">Login</a>
+                <a href="#/register" class="btn btn-default">Register</a>
+            </div>
+        </div>
+    </fieldset>
+</form>
