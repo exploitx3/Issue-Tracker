@@ -31,3 +31,24 @@
         </li>
     </ul>
 </div>
+<div class="col-md-8">
+    <h1>Comments  <span ng-if="issueComments.length === 0">
+         - None
+    </span></h1>
+    <ul ng-cloak class="list-group">
+        <button ng-if="authService.isAdmin() || authService.getCurrentUser().Id === projectData.Lead.Id"
+                id="add-issue-button" class="btn btn-primary" ng-click="openAddIssueModal()">Add Issue
+        </button>
+
+
+
+        <div class="panel panel-primary" ng-repeat="issueComment in issueComments">
+            <div class="panel-heading">
+                <h3 class="panel-title">{{issueComment.Author.Username}} - {{issueComment.CreatedOn | date:'yyyy-MM-dd HH:mm:ss'}}</h3>
+            </div>
+            <div class="panel-body">
+                {{issueComment.Text}}
+            </div>
+        </div>
+    </ul>
+</div>
