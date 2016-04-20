@@ -1,0 +1,33 @@
+<div class="col-md-4">
+    <h1>Issue - Info</h1>
+    <ul ng-cloak class="list-group">
+        <h1>{{issueData.IssueKey}}</h1>
+        <label for="issueTitle">Title:</label>
+        <span id="issueTitle">{{issueData.Title}}</span><br>
+        <label for="issue-description">Description:</label>
+        <span id="issue-description">{{issueData.Description}}</span><br>
+        <label for="issue-assignee-username">Assignee Username:</label>
+        <span id="issue-assignee-username">{{issueData.Assignee.Username}}</span><br>
+        <label for="issue-priority-name">Priority:</label>
+        <span id="issue-priority-name">{{issueData.Priority.Name}}</span><br>
+        <label for="issue-due-date">DueDate:</label>
+        <span id="issue-due-date">{{issueData.DueDate}}</span><br>
+        <label for="issue-author">Author:</label>
+        <span id="issue-author">{{issueData.Author.Username}}</span><br>
+        <label for="issue-due-date">Project:</label>
+        <span id="issue-project-name">{{issueData.Project.Name}}</span><br>
+        <label for="issue-status">Status:</label>
+        <span id="issue-status">{{issueData.Status.Name}}</span><br>
+        <label for="labels">Labels:</label>
+        <ul id="labels">
+            <li ng-repeat="label in issueData.Labels">{{label.Name}}</li>
+        </ul>
+    </ul>
+    <h2>Available Statuses:</h2>
+    <ul>
+        <li ng-repeat="availableStatus in issueData.AvailableStatuses">
+            -----{{availableStatus.Name}}
+            <button ng-click="changeIssueStatus(availableStatus.Id)" class="btn-primary">Change</button>
+        </li>
+    </ul>
+</div>
