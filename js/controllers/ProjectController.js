@@ -1,5 +1,5 @@
-app.controller('ProjectController', ['$scope', '$routeParams', '$filter', 'projectsService', 'notifyService', 'pageSize', 'ngTableParams',
-    function ($scope, $routeParams, $filter, projectsService, notifyService, pageSize, ngTableParams) {
+app.controller('ProjectController', ['$scope', '$routeParams', '$filter', 'userService', 'projectsService', 'notifyService', 'pageSize', 'ngTableParams',
+    function ($scope, $routeParams, $filter, userService, projectsService, notifyService, pageSize, ngTableParams) {
         $scope.projectsParams = {
             'startPage': 1,
             'pageSize': pageSize
@@ -32,6 +32,40 @@ app.controller('ProjectController', ['$scope', '$routeParams', '$filter', 'proje
             });
         };
 
+        $scope.openAddIssueModal = function () {
+            jQuery('#add-issue-modal').modal('show');
+            userService.getAllUsers(function success(users) {
+                $scope.users = users;
+            }, function error(err) {
+                notifyService.showError('Cannot load users', err);
+            });
+            $scope.priorities = $scope.projectData.Priorities;
+        };
+
+        $scope.addIssue = function addIssue(issueData) {
+            var formattedIssueData = {
+                title: issueData.title,
+                description: issueData.description,
+                projectId: $routeParams.projectId,
+                assigneeId: issueData.assigneeId,
+                priorityId: issueData.priorityId
+            };
+            var labels = issueData.labels.split(',')
+                .map(function (label) {
+                    return label.trim();
+                })
+                .filter(function (label) {
+                    return label !== "";
+                });
+
+            formattedIssueData.labels = labels;
+            formattedIssueData.dueDate = issueData.dueDate.toISOString().substring(0, 19);
+           //TODO: add Issue
+
+            jQuery('#add-issue-modal').modal('hide');
+        };
+
+        $scope.getProjectData();
 
         $scope.getProjectData();
 
