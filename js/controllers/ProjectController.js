@@ -1,5 +1,5 @@
-app.controller('ProjectController', ['$scope', '$routeParams', '$filter', 'userService', 'projectsService', 'notifyService', 'pageSize', 'ngTableParams',
-    function ($scope, $routeParams, $filter, userService, projectsService, notifyService, pageSize, ngTableParams) {
+app.controller('ProjectController', ['$scope', '$routeParams', '$filter', 'issuesService', 'userService', 'projectsService', 'notifyService', 'pageSize', 'ngTableParams',
+    function ($scope, $routeParams, $filter, issuesService, userService, projectsService, notifyService, pageSize, ngTableParams) {
         $scope.projectsParams = {
             'startPage': 1,
             'pageSize': pageSize
@@ -60,7 +60,12 @@ app.controller('ProjectController', ['$scope', '$routeParams', '$filter', 'userS
 
             formattedIssueData.labels = labels;
             formattedIssueData.dueDate = issueData.dueDate.toISOString().substring(0, 19);
-           //TODO: add Issue
+            issuesService.addIssue(formattedIssueData, function () {
+                    notifyService.showInfo('Successfully added an Issue');
+                },
+                function (err) {
+                    notifyService.showError('Cannot add Issue', err);
+                });
 
             jQuery('#add-issue-modal').modal('hide');
         };
