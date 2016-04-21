@@ -16,17 +16,17 @@ body {
     margin-bottom: 50px;
 }
 
-#app-header {
-    background-color: #000c55;
-    border: #507E32 1px solid;
-    text-align: center;
-    padding: 5px;
-    font-size: 16pt;
-    font-weight: bold;
-    color: #fffafe;
-    text-shadow: rgba(0, 12, 85, 0.5) 0.5px 0.5px 1px;
-    margin: 5px;
-}
+/*#app-header {*/
+    /*background-color: #000c55;*/
+    /*border: #507E32 1px solid;*/
+    /*text-align: center;*/
+    /*padding: 5px;*/
+    /*font-size: 16pt;*/
+    /*font-weight: bold;*/
+    /*color: #fffafe;*/
+    /*text-shadow: rgba(0, 12, 85, 0.5) 0.5px 0.5px 1px;*/
+    /*margin: 5px;*/
+/*}*/
 
 .home-area {
     width: 900px;
