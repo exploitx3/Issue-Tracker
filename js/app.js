@@ -1,5 +1,5 @@
 "use strict";
-var app = angular.module('app', ['ngRoute', 'ngTable', 'angular-loading-bar']);
+var app = angular.module('app', ['ngRoute', 'ngTable', 'ui.bootstrap.pagination', 'angular-loading-bar']);
 app.constant('baseServiceUrl', 'http://softuni-issue-tracker.azurewebsites.net');
 app.constant('pageSize', 3);
 app.config(function ($routeProvider) {
@@ -69,6 +69,12 @@ app.config(function ($routeProvider) {
         templateUrl: 'templates/partial/issue.html',
         controller: 'IssueController',
         title: 'Issue'
+    });
+
+    $routeProvider.when('/projects/add-project', {
+        templateUrl: 'templates/partial/issue.html',
+        controller: 'AddProjectController',
+        title: 'Add Project'
     });
 
     $routeProvider.otherwise({

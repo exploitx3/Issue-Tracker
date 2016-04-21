@@ -1,9 +1,6 @@
 <div class="col-md-4">
     <h1>Project - Info</h1>
-    <ul ng-cloak class="list-group">
-        <button ng-if="authService.isAdmin() || authService.getCurrentUser().Id === projectData.Lead.Id"
-                id="add-issue-button" class="btn btn-primary" ng-click="openAddIssueModal()">Add Issue
-        </button>
+    <ul  ng-if="!(authService.isAdmin() || (projectData.Lead.Id === authService.getCurrentUser().Id))" ng-cloak class="list-group">
         <h1>{{projectData.Name}}</h1>
         <label for="projectKey">Project key:</label>
         <span id="projectKey">{{projectData.ProjectKey}}</span><br>
@@ -21,6 +18,32 @@
         <ul id="priorities">
             <li ng-repeat="priority in projectData.Priorities">{{priority.Name}}</li>
         </ul>
+    </ul>
+    <ul ng-if="authService.isAdmin() || (projectData.Lead.Id === authService.getCurrentUser().Id)" ng-cloak class="list-group">
+
+        <h1>{{projectData.Name}}</h1>
+        <label for="projectKey">Project key:</label>
+        <span id="projectKey">{{projectData.ProjectKey}}</span><br>
+        <label for="description">Description:</label>
+        <span id="description">{{projectData.Description}}</span><br>
+        <label for="leadId">Lead Id:</label>
+        <span id="leadId">{{projectData.Lead.Id}}</span><br>
+        <label for="leadUsername">Lead Username:</label>
+        <span id="leadUsername">{{projectData.Lead.Username}}</span><br>
+        <label for="labels">Labels:</label>
+        <ul id="labels">
+            <li ng-repeat="label in projectData.Labels">{{label.Name}}</li>
+        </ul>
+        <label for="priorities">Priorities:</label>
+        <ul id="priorities">
+            <li ng-repeat="priority in projectData.Priorities">{{priority.Name}}</li>
+        </ul>
+        <button
+                id="edit-project-button" class="btn btn-primary" ng-click="openAddIssueModal()">Edit Project
+        </button>
+        <button
+                id="add-issue-button" class="btn btn-primary" ng-click="openAddIssueModal()">Add Issue
+        </button>
     </ul>
 </div>
 <div class="col-md-8">

@@ -1,28 +1,47 @@
 <div ng-if="authService.isLoggedIn()">
-    <h2>Home Screen</h2>
-    <ul ng-cloak class="list-group">
-        <li ng-repeat="ad in ads.ads" class="list-group-item">
-            <h1>{{ad.title}}</h1>
-
-            <div><strong>Date:</strong> {{ad.date | date:'dd-MM-yyyy'}}</div>
-            <div ng-if="ad.imageDataUrl">
-                <strong>Image:</strong>
-                <img class="ad-image" src="{{ad.imageDataUrl}}"/>
-            </div>
-            <div><strong>Text:</strong> {{ad.text}}</div>
-            <div><strong>Name:</strong> {{ad.ownerName }}</div>
-            <div><strong>Email:</strong> {{ad.ownerEmail}}</div>
-            <div><strong>Phone:</strong> {{ad.ownerPhone}}</div>
-        </li>
-    </ul>
-
-
-    <div ng-if="ads.ads.length==0" class="box no-data">
-        No ads found.
+    <div class="col-md-6">
+        <h2>Affiliated Projects</h2>
+        <ul ng-cloak class="list-group">
+            <li ng-repeat="project in affiliatedProjects" class="list-group-item">
+                <h3><a href="#/projects/{{project.Id}}">{{project.Name}}</a></h3>
+            </li>
+        </ul>
     </div>
 
-    <pagination ng-cloak total-items="ads.numItems" ng-model="adsParams.startPage" items-per-page="adsParams.pageSize"
-                ng-change="reloadIssues()" max-size="9" boundary-links="true"></pagination>
+    <div class="col-md-6">
+        <div ng-if="issues.length==0">
+            No issues found.
+        </div>
+
+
+        <table class="table table-top-margin table-striped">
+            <thead>
+                <tr>
+                    <td>Title</td>
+                    <td>Description</td>
+                    <td>DueDate</td>
+                    <td>AssigneeUsername</td>
+                </tr>
+            </thead>
+            <tr ng-repeat="issue in issues">
+                <td>
+                    <a href="#/issues/{{issue.Id}}" class="link">{{issue.Title}}</a>
+                </td>
+                <td>
+                    {{issue.Description}}
+                </td>
+                <td>
+                    {{issue.DueDate | date:'dd/MM/yyyy'}}
+                </td>
+                <td>
+                    {{issue.Assignee.Username}}
+                </td>
+            </tr>
+        </table>
+        <pagination ng-cloak total-items="homeParams.numItems" ng-model="homeParams.startPage"
+                    items-per-page="homeParams.pageSize"
+                    ng-change="reloadMyIssues(homeParams.startPage, homeParams.pageSize)" max-size="9" boundary-links="true"></pagination>
+    </div>
 </div>
 
 <div ng-if="!authService.isLoggedIn()" class="home-area">

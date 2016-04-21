@@ -32,5 +32,28 @@ app.controller('HomeController',
         if(authService.isLoggedIn()){
             $scope.reloadMyIssues(1, 2);
         }
+        //
+        ////$scope.$on('categorySelectionChanged', function (event, selectedCategoryId) {
+        ////    $scope.adsParams.categoryId = selectedCategoryId;
+        ////    $scope.startPage = 1;
+        ////    $scope.reloadAds();
+        ////});
+        ////
+        ////$scope.$on('townSelectionChanged', function (event, selectedTownId) {
+        ////    $scope.adsParams.townId = selectedTownId;
+        ////    $scope.startPage = 1;
+        ////    $scope.reloadAds();
+        ////});
+        //
+        //
+        //if (authService.isLoggedIn()) {
+        //    $scope.reloadIssues();
+        //}
+        //
+        //$rootScope.$on("$routeChangeSuccess", function (event, currentRoute, previousRoute) {
+        //    $rootScope.title = currentRoute.title;
+        //});
+
+
     }
 );
