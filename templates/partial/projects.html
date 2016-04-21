@@ -1,4 +1,5 @@
 <h2>All Projects</h2>
+<!--<a ng-if="authService.isAdmin()" href="#/projects/add" class="btn btn-primary">Add Project</a>-->
 <ul ng-cloak class="list-group">
     <li ng-repeat="project in projects" class="list-group-item">
         <h1>{{project.Name}}    <a href="#/projects/{{project.Id}}" class="btn btn-primary">View</a></h1>
@@ -14,7 +15,6 @@
         <!--<div><strong>Phone:</strong> {{ad.ownerPhone}}</div>-->
     </li>
 </ul>
-<a href="#/add-project" class="btn-primary">Add Project</a>
 
 <div ng-if="projects.length==0" class="box no-data">
     No projects found.

@@ -1,0 +1,61 @@
+<div class="modal" id="add-project-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Add Issue</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <fieldset>
+                        <div class="form-group">
+                            <label for="projectName" class="col-lg-2 control-label">Name</label>
+
+                            <div class="col-lg-10">
+                                <input type="text" class="form-control" id="projectName" placeholder="Name"
+                                       ng-model="projectData.name" required>
+                            </div>
+                        </div>
+                        <label for="projectLeader" class="col-lg-2 control-label">Leader</label>
+
+                        <div class="col-lg-10">
+                            <select class="form-control" id="projectLeader" ng-model="projectData.leadId">
+                                <option ng-repeat="user in users" value="{{user.Id}}">{{user.Username}}</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="projectLabels" class="col-lg-2 control-label">Labels(comma separated)</label>
+
+                            <div class="col-lg-10">
+                                <input type="text" class="form-control" id="projectLabels"
+                                       placeholder="soft" ng-model="projectData.labels" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="projectPriorities" class="col-lg-2 control-label">Priorities(comma
+                                separated)</label>
+
+                            <div class="col-lg-10">
+                                <input type="text" class="form-control" id="projectPriorities" placeholder="soft"
+                                       ng-model="projectData.priorities" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="projectDescription" class="col-lg-2 control-label">Description</label>
+
+                            <div class="col-lg-10">
+                                <input type="text" class="form-control" id="projectDescription"
+                                       placeholder="Description"
+                                       ng-model="projectData.description" required>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button ng-click="addProject(projectData)" type="button" class="btn btn-primary">Add Project</button>
+            </div>
+        </div>
+    </div>
+</div>

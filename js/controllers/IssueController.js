@@ -1,5 +1,5 @@
-app.controller('IssueController', ['$scope', '$routeParams', '$filter', '$q', 'authService', 'issuesService', 'userService', 'projectsService', 'notifyService', 'pageSize', 'ngTableParams',
-    function ($scope, $routeParams, $filter, $q, authService, issuesService, userService, projectsService, notifyService, pageSize, ngTableParams) {
+app.controller('IssueController', ['$scope', '$route', '$routeParams', '$filter', '$q', 'authService', 'issuesService', 'userService', 'userDataService', 'projectsService', 'notifyService', 'pageSize', 'ngTableParams',
+    function ($scope, $route, $routeParams, $filter, $q, authService, issuesService, userService, userDataService, projectsService, notifyService, pageSize, ngTableParams) {
         "use strict";
 
         $scope.issueParams = {
@@ -31,37 +31,97 @@ app.controller('IssueController', ['$scope', '$routeParams', '$filter', '$q', 'a
         };
 
         $scope.changeIssueStatus = function changeIssueStatus(statusId) {
-            console.log(statusId);
+            issuesService.changeIssueStatus(statusId, $routeParams.issueId)
+                .then(function () {
+                    $route.reload();
+                })
         };
-
-        var currentId = authService.getCurrentUser().Id;
-        $scope.getIssueData()
-            .then(function () {
-                var isIssueAssignee = currentId === $scope.issueData.Assignee.Id;
-                userService.isProjectLead($scope.issueData.Project.Id)
-                    .then(function (check) {
-                        var isProjectLead = check;
-                        var hasAssignedIssueInProject = userService.hasAssignedIssueInProject($scope.issueData.Project.Id);
-                        $scope.userParams = {
-                            isIssueAssignee: isIssueAssignee,
-                            isProjectLead: isProjectLead,
-                            hasAssignedIssueInProject: hasAssignedIssueInProject
-                        }
-                    })
-            }, function (err) {
-                notifyService.showError('Cannot check project lead id', err);
-            });
 
         $scope.addComment = function addComment(text) {
             issuesService.addComment($routeParams.issueId, text)
                 .then(
                     function success(newComments) {
-
+                        $route.reload();
                     },
                     function error(err) {
                         notifyService.showError('Cannot add comment', err);
                     })
-        }
+        };
+        $scope.getIssueData()
+            .then(function () {
+
+                $scope.isProjectLead = function () {
+                    return userDataService.isProjectLead($scope.issueData.Project.Id);
+                };
+
+                $scope.hasAssignedIssueInProject = function () {
+                    return userDataService.hasAssignedIssueInProject($scope.issueData.Project.Id);
+                };
+
+                $scope.isIssueAssignee = function () {
+                    return userDataService.isIssueAssignee($routeParams.issueId);
+                };
+
+                $scope.openEditIssueModal = function () {
+                    userService.getAllUsers()
+                        .then(function success(users) {
+                            $scope.users = users;
+                        }, function error(err) {
+                            notifyService.showError('Cannot load users', err);
+                        });
+                    var labels = $scope.issueData.Labels.map(function (label) {
+                        return label.Name;
+                    }).join(', ');
+
+                    projectsService.getProjectById($scope.issueData.Project.Id)
+                        .then(function (data) {
+                            var priorities = data.Priorities;
+                            $scope.editIssueData = {
+                                priority: $scope.issueData.Priority,
+                                assignee: $scope.issueData.Assignee,
+                                id: $scope.issueData.Id,
+                                title: $scope.issueData.Title,
+                                description: $scope.issueData.Description,
+                                dueDate: new Date($scope.issueData.DueDate),
+                                priorities: priorities,
+                                labels: labels
+                            };
+                            jQuery('#edit-issue-modal').modal('show');
+                        });
+
+
+
+
+                    $scope.editIssue = function(data){
+                        var formattedIssueData = {
+                            title: data.title,
+                            description: data.description,
+                            assigneeId: data.assignee.Id,
+                            priorityId: data.priority.Id
+                        };
+                        var labels = data.labels.split(',')
+                            .map(function (label) {
+                                return label.trim();
+                            })
+                            .filter(function (label) {
+                                return label !== "";
+                            });
+
+                        formattedIssueData.labels = labels;
+                        formattedIssueData.dueDate = data.dueDate.toISOString().substring(0, 19);
+                        issuesService.editIssue(formattedIssueData, data.id)
+                            .then(function () {
+                                    notifyService.showInfo('Successfully editted an Issue');
+                                    userService.updateUserData();
+                                    $route.reload();
+                                },
+                                function (err) {
+                                    notifyService.showError('Cannot edit Issue', err);
+                                });
+                        jQuery('#edit-issue-modal').modal('hide');
+                    }
+                }
+            });
 
 
     }]);

@@ -30,6 +30,52 @@ app.factory('issuesService', function ($http, $q, authService, baseServiceUrl) {
         return defer.promise;
     }
 
+    function editIssue(formattedIssueData, issueId) {
+        var defer = $q.defer();
+        var request = 'Title=' + encodeURIComponent(formattedIssueData.title) +
+            '&Description=' + encodeURIComponent(formattedIssueData.description) +
+            '&DueDate=' + encodeURIComponent(formattedIssueData.dueDate) +
+            '&AssigneeId=' + encodeURIComponent(formattedIssueData.assigneeId) +
+            '&PriorityId=' + encodeURIComponent(formattedIssueData.priorityId) + '&';
+        var len = formattedIssueData.labels.length, i;
+        for (i = 0; i < len; i += 1) {
+            request += encodeURIComponent('Labels[' + i + '].Name') + '=' + encodeURIComponent(formattedIssueData.labels[i]) + (i === len - 1 ? '' : '&');
+        }
+        $http({
+            method: 'PUT',
+            url: baseServiceUrl + '/issues/' + issueId,
+            data: request,
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': 'Bearer ' + sessionStorage['currentUser-Token']
+            }
+        }).success(function (data) {
+            defer.resolve(data);
+        }).error(function (err) {
+            defer.reject(err);
+        });
+
+        return defer.promise;
+    }
+
+    function changeIssueStatus(newStatus, issueId) {
+        var defer = $q.defer();
+        $http({
+            method: 'PUT',
+            url: baseServiceUrl + '/issues/' + issueId + '/changestatus?statusid=' + newStatus,
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': 'Bearer ' + sessionStorage['currentUser-Token']
+            }
+        }).success(function (data) {
+            defer.resolve(data);
+        }).error(function (err) {
+            defer.reject(err);
+        });
+
+        return defer.promise;
+    }
+
     function addComment(issueId, text) {
         var defer = $q.defer();
         var request = 'Text=' + encodeURIComponent(text);
@@ -112,6 +158,8 @@ app.factory('issuesService', function ($http, $q, authService, baseServiceUrl) {
 
     return {
         addIssue: addIssue,
+        changeIssueStatus: changeIssueStatus,
+        editIssue: editIssue,
         addComment: addComment,
         getMyIssues: getMyIssues,
         getIssueById: getIssueById,
@@ -120,20 +168,3 @@ app.factory('issuesService', function ($http, $q, authService, baseServiceUrl) {
     }
 });
 
-//app.factory('townsService', function ($resource, baseServiceUrl) {
-//    var townsResource = $resource(baseServiceUrl + '/api/towns');
-//    return {
-//        getTowns: function getTowns(success, error) {
-//            return townsResource.query(success, error);
-//        }
-//    }
-//});
-//
-//app.factory('categoriesService', function ($resource, baseServiceUrl) {
-//    var categoriesResource = $resource(baseServiceUrl + '/api/categories');
-//    return {
-//        getCategories: function getCategories(success, error) {
-//            return categoriesResource.query(success, error);
-//        }
-//    }
-//});

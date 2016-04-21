@@ -1,8 +1,12 @@
 "use strict";
-var app = angular.module('app', ['ngRoute', 'ngTable', 'ui.bootstrap.pagination', 'angular-loading-bar']);
+var app = angular.module('app', ['ngRoute', 'LocalStorageModule', 'ngTable', 'ui.bootstrap.pagination', 'angular-loading-bar']);
 app.constant('baseServiceUrl', 'http://softuni-issue-tracker.azurewebsites.net');
 app.constant('pageSize', 3);
-app.config(function ($routeProvider) {
+app.config(function ($routeProvider, localStorageServiceProvider) {
+    localStorageServiceProvider
+        .setPrefix('issueTrackerData')
+        .setStorageType('localStorage');
+
     $routeProvider.when('/', {
         templateUrl: 'templates/home.html',
         controller: 'HomeController',
@@ -59,6 +63,13 @@ app.config(function ($routeProvider) {
         title: 'Projects'
     });
 
+
+    $routeProvider.when('/projects/add', {
+        templateUrl: 'templates/partial/add-new-project.html',
+        controller: 'AddProjectController',
+        title: 'Add Project'
+    });
+
     $routeProvider.when('/projects/:projectId', {
         templateUrl: 'templates/partial/project.html',
         controller: 'ProjectController',
@@ -71,20 +82,17 @@ app.config(function ($routeProvider) {
         title: 'Issue'
     });
 
-    $routeProvider.when('/projects/add-project', {
-        templateUrl: 'templates/partial/issue.html',
-        controller: 'AddProjectController',
-        title: 'Add Project'
-    });
-
     $routeProvider.otherwise({
         redirectTo: '/'
     });
 });
 
-app.run(['$rootScope', '$location', 'authService', function ($rootScope, $location, authService) {
+app.run(['$rootScope', '$location', 'authService', 'userService', function ($rootScope, $location, authService, userService) {
     $rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
         $rootScope.title = current.$$route.title;
+    });
+    $rootScope.$on('userLoggedOut', function (event) {
+        userService.clearUserChecks();
     });
     $rootScope.$on('$locationChangeStart', function (event) {
         if ($location.path().indexOf("/user/") != -1 && !authService.isLoggedIn()) {
@@ -97,3 +105,4 @@ app.run(['$rootScope', '$location', 'authService', function ($rootScope, $locati
         }
     });
 }]);
+

@@ -1,5 +1,8 @@
 <div class="col-md-4">
     <h1>Issue - Info</h1>
+    <button ng-if="isProjectLead() || authService.isAdmin()"
+            id="edit-issue-button" class="btn btn-primary" ng-click="openEditIssueModal()">Edit Issue
+    </button>
     <ul ng-cloak class="list-group">
         <h1>{{issueData.IssueKey}}</h1>
         <label for="issueTitle">Title:</label>
@@ -27,7 +30,7 @@
     <ul>
         <li ng-repeat="availableStatus in issueData.AvailableStatuses">
             -----{{availableStatus.Name}}
-            <button ng-if="userParams.isIssueAssignee || userParams.isProjectLead" ng-click="changeIssueStatus(availableStatus.Id)" class="btn-primary">Change</button>
+            <button ng-if="isIssueAssignee() || isProjectLead() || authService.isAdmin()" ng-click="changeIssueStatus(availableStatus.Id)" class="btn-primary">Change</button>
         </li>
     </ul>
 </div>
@@ -48,7 +51,7 @@
                 {{issueComment.Text}}
             </div>
         </div>
-        <form ng-if="userParams.isIssueAssignee || userParams.hasAssignedIssueInProject || userParams.isProjectLead" class="form-inline" role="form">
+        <form ng-if="isIssueAssignee() || hasAssignedIssueInProject() || isProjectLead()" class="form-inline" role="form">
             <div class="form-group">
                 <textarea class="form-control col-md-10" rows="2" cols="70" ng-model="text" type="text" placeholder="Your comment"></textarea>
             </div>
@@ -58,3 +61,5 @@
         </form>
     </ul>
 </div>
+
+<div ng-if="isProjectLead() || authService.isAdmin()" ng-include="'templates/partial/edit-issue.html'"></div>

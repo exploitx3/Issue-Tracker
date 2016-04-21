@@ -1,6 +1,6 @@
 "use strict";
 
-app.factory('authService', ['$q', '$http', 'baseServiceUrl', function ($q, $http, baseServiceUrl) {
+app.factory('authService', ['$rootScope', '$q', '$http', 'baseServiceUrl', function ($rootScope, $q, $http, baseServiceUrl) {
     return {
         login: function (userData) {
             var defer = $q.defer();
@@ -38,8 +38,23 @@ app.factory('authService', ['$q', '$http', 'baseServiceUrl', function ($q, $http
             return defer.promise;
         },
         logout: function () {
+            var defer = $q.defer();
+            var request = {
+                method: 'POST',
+                url: baseServiceUrl + '/api/Account/Logout',
+                headers: this.getAuthHeaders()
+            };
             sessionStorage.removeItem('currentUser');
             sessionStorage.removeItem('currentUser-Token');
+            $rootScope.$broadcast('userLoggedOut');
+
+            $http(request).success(function (data) {
+                defer.resolve(data);
+            }).error(function (err) {
+                defer.reject(err);
+            });
+
+            return defer.promise;
         },
         getUserInfo: function () {
             var defer = $q.defer();
@@ -114,26 +129,26 @@ app.factory('authService', ['$q', '$http', 'baseServiceUrl', function ($q, $http
         //    };
         //    $http(request).success(success).error(error);
         //},
-        editUser: function (userData) {
-            var defer = $q.defer();
-            var request = {
-                method: 'PUT',
-                url: baseServiceUrl + '/api/user/profile',
-                data: userData,
-                headers: this.getAuthHeaders()
-            };
-            $http(request).success(
-                function success(data) {
-                    defer.resolve(data);
-                }).error(function error(err) {
-                defer.reject(err);
-            });
-        },
+        //editUser: function (userData) {
+        //    var defer = $q.defer();
+        //    var request = {
+        //        method: 'POST',
+        //        url: baseServiceUrl + '/api/Account/Profile',
+        //        data: userData,
+        //        headers: this.getAuthHeaders()
+        //    };
+        //    $http(request).success(
+        //        function success(data) {
+        //            defer.resolve(data);
+        //        }).error(function error(err) {
+        //        defer.reject(err);
+        //    });
+        //},
         changePass: function (passData) {
             var defer = $q.defer();
             var request = {
-                method: 'PUT',
-                url: baseServiceUrl + '/api/user/changePassword',
+                method: 'POST',
+                url: baseServiceUrl + '/api/Account/ChangePassword',
                 data: passData,
                 headers: this.getAuthHeaders()
             };

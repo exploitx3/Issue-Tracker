@@ -1,5 +1,5 @@
-app.controller('ProjectController', ['$scope', '$routeParams', '$filter', 'userService', 'authService', 'issuesService', 'projectsService', 'notifyService', 'pageSize', 'ngTableParams',
-    function ($scope, $routeParams, $filter, userService, authService, issuesService, projectsService, notifyService, pageSize, ngTableParams) {
+app.controller('ProjectController', ['$scope', '$route', '$routeParams', '$filter', 'userDataService', 'userService', 'authService', 'issuesService', 'projectsService', 'notifyService', 'pageSize', 'ngTableParams',
+    function ($scope, $route, $routeParams, $filter, userDataService, userService, authService, issuesService, projectsService, notifyService, pageSize, ngTableParams) {
         $scope.projectsParams = {
             'startPage': 1,
             'pageSize': pageSize
@@ -34,9 +34,6 @@ app.controller('ProjectController', ['$scope', '$routeParams', '$filter', 'userS
                 });
         };
 
-        $scope.EditProject = function(){
-        };
-
 
         $scope.openAddIssueModal = function () {
             jQuery('#add-issue-modal').modal('show');
@@ -47,6 +44,66 @@ app.controller('ProjectController', ['$scope', '$routeParams', '$filter', 'userS
                     notifyService.showError('Cannot load users', err);
                 });
             $scope.priorities = $scope.projectData.Priorities;
+        };
+
+        $scope.openEditProjectModal = function () {
+            jQuery('#edit-project-modal').modal('show');
+            userService.getAllUsers()
+                .then(function success(users) {
+                    $scope.users = users;
+                }, function error(err) {
+                    notifyService.showError('Cannot load users', err);
+                });
+            var labels = $scope.projectData.Labels.map(function (label) {
+                return label.Name;
+            }).join(', ');
+            var priorities = $scope.projectData.Priorities.map(function (priority) {
+                return priority.Name;
+            }).join(', ');
+            $scope.newProjectData = {
+                id: $scope.projectData.Id,
+                name: $scope.projectData.Name,
+                leader: $scope.projectData.Lead,
+                labels: labels,
+                priorities: priorities,
+                description: $scope.projectData.Description
+            }
+        };
+
+        $scope.editProject = function editProject(projectData) {
+            var formattedProjectData = {
+                name: projectData.name,
+                description: projectData.description,
+                leadId: projectData.leader.Id
+            };
+            var labels = projectData.labels.split(',')
+                .map(function (label) {
+                    return label.trim();
+                })
+                .filter(function (label) {
+                    return label !== "";
+                });
+
+            var priorities = projectData.priorities.split(',')
+                .map(function (priority) {
+                    return priority.trim();
+                })
+                .filter(function (priority) {
+                    return priority !== "";
+                });
+
+            formattedProjectData.labels = labels;
+            formattedProjectData.priorities = priorities;
+            projectsService.editProject(formattedProjectData, projectData.id)
+                .then(function () {
+                        notifyService.showInfo('Successfully added a project');
+                    },
+                    function (err) {
+                        notifyService.showError('Cannot add project', err);
+                    });
+
+            jQuery('#edit-project-modal').modal('hide');
+            $route.reload();
         };
 
         $scope.addIssue = function addIssue(issueData) {
@@ -70,6 +127,9 @@ app.controller('ProjectController', ['$scope', '$routeParams', '$filter', 'userS
             issuesService.addIssue(formattedIssueData)
                 .then(function () {
                         notifyService.showInfo('Successfully added an Issue');
+                        $scope.getProjectData();
+                        userService.updateUserData();
+                        $route.reload();
                     },
                     function (err) {
                         notifyService.showError('Cannot add Issue', err);
@@ -80,6 +140,6 @@ app.controller('ProjectController', ['$scope', '$routeParams', '$filter', 'userS
 
         $scope.getProjectData();
         $scope.ProjectAdminLeadRights = function () {
-            return  authService.isAdmin() || ($scope.projectData.Lead.Id === authService.getCurrentUser().Id);
+            return authService.isAdmin() || userDataService.isProjectLead($routeParams.projectId);
         };
     }]);

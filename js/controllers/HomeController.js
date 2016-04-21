@@ -1,18 +1,19 @@
 "use strict";
 
 app.controller('HomeController',
-    function ($scope, $rootScope, $q, userService, issuesService, authService, notifyService, ngTableParams, $filter, pageSize) {
+    function ($scope, $rootScope, $q, userService, userDataService, issuesService, authService, notifyService, ngTableParams, $filter, pageSize) {
         $scope.homeParams = {
             'startPage': 1,
             'pageSize': 2
         };
-        if(authService.isLoggedIn()){
-            userService.setUserChecks();
+        if (authService.isLoggedIn()) {
+            userService.setUserChecks().then(function () {
+                $scope.affiliatedProjects = userDataService.getAffiliatedProjects();
+            });
         }
 
-        $scope.affiliatedProjects = userService.getAffiliatedProjects();
 
-        $scope.reloadMyIssues = function (page ,pageSize) {
+        $scope.reloadMyIssues = function (page, pageSize) {
             var defer = $q.defer();
             issuesService.getMyIssuesWithPagination(page, pageSize)
                 .then(
@@ -29,10 +30,10 @@ app.controller('HomeController',
             return defer.promise;
         };
 
-        if(authService.isLoggedIn()){
+        if (authService.isLoggedIn()) {
             $scope.reloadMyIssues(1, 2);
         }
-        //
+
         ////$scope.$on('categorySelectionChanged', function (event, selectedCategoryId) {
         ////    $scope.adsParams.categoryId = selectedCategoryId;
         ////    $scope.startPage = 1;
