@@ -22,7 +22,8 @@ app.controller('ProjectController', ['$scope', '$route', '$routeParams', '$filte
                                 getData: function ($defer, params) {
                                     $scope.data = params.sorting() ? $filter('orderBy')($scope.projectData.Issues, params.orderBy()) : $scope.projectData.Issues;
                                     $scope.data = params.filter() ? $filter('filter')($scope.data, params.filter()) : $scope.data;
-                                    $scope.data = $scope.data.slice((params.page() - 1) * params.count(), params.page() * params.count());
+									this.total = $scope.data.length;
+									$scope.data = $scope.data.slice((params.page() - 1) * params.count(), params.page() * params.count());
                                     $defer.resolve($scope.data);
                                 }
                             });
