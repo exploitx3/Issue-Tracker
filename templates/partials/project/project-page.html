@@ -1,0 +1,70 @@
+<div class="col-md-4">
+    <h1>Project - Info</h1>
+    <ul  ng-if="!(authService.isAdmin() || userService.isProjectLead(projectData.Id))" ng-cloak class="list-group">
+        <h1>{{projectData.Name}}</h1>
+        <label for="projectKey">Project key:</label>
+        <span id="projectKey">{{projectData.ProjectKey}}</span><br>
+        <label for="description">Description:</label>
+        <span id="description">{{projectData.Description}}</span><br>
+        <label for="leadId">Lead Id:</label>
+        <span id="leadId">{{projectData.Lead.Id}}</span><br>
+        <label for="leadUsername">Lead Username:</label>
+        <span id="leadUsername">{{projectData.Lead.Username}}</span><br>
+        <label for="labels">Labels:</label>
+        <ul id="labels">
+            <li ng-repeat="label in projectData.Labels">{{label.Name}}</li>
+        </ul>
+        <label for="priorities">Priorities:</label>
+        <ul id="priorities">
+            <li ng-repeat="priority in projectData.Priorities">{{priority.Name}}</li>
+        </ul>
+    </ul>
+    <ul ng-if="authService.isAdmin() || userService.isProjectLead(projectData.Id)" ng-cloak class="list-group">
+
+        <h1>{{projectData.Name}}</h1>
+        <label for="projectKey">Project key:</label>
+        <span id="projectKey">{{projectData.ProjectKey}}</span><br>
+        <label for="description">Description:</label>
+        <span id="description">{{projectData.Description}}</span><br>
+        <label for="leadId">Lead Id:</label>
+        <span id="leadId">{{projectData.Lead.Id}}</span><br>
+        <label for="leadUsername">Lead Username:</label>
+        <span id="leadUsername">{{projectData.Lead.Username}}</span><br>
+        <label for="labels">Labels:</label>
+        <ul id="labels">
+            <li ng-repeat="label in projectData.Labels">{{label.Name}}</li>
+        </ul>
+        <label for="priorities">Priorities:</label>
+        <ul id="priorities">
+            <li ng-repeat="priority in projectData.Priorities">{{priority.Name}}</li>
+        </ul>
+        <button
+                id="edit-project-button" class="btn btn-primary" ng-click="openEditProjectModal()">Edit Project
+        </button>
+        <button
+                id="add-issue-button" class="btn btn-primary" ng-click="openAddIssueModal()">Add Issue
+        </button>
+    </ul>
+</div>
+<div class="col-md-8">
+    <button class="btn" ng-click="refreshProjectDataAndDatabase()" id="Refresh"><span class="glyphicon glyphicon-refresh"> Refresh</span></button>
+    <h1>Project - Issues</h1>
+    <table ng-table="issuesTable" show-filter="true" class="table table-striped">
+        <tr ng-repeat="issue in data">
+            <td data-title="'Title'" sortable="'Title'" filter="{ 'Title': 'text' }">
+                <a href="#/issues/{{issue.Id}}" class="link">{{issue.Title}}</a>
+            </td>
+            <td data-title="'Description'" sortable="'Description'" filter="{ 'Description': 'text' }">
+                {{issue.Description}}
+            </td>
+            <td data-title="'DueDate'" sortable="'DueDate'" filter="{ 'DueDate': 'text' }">
+                {{issue.DueDate | date:'dd/MM/yyyy'}}
+            </td>
+            <td data-title="'Assignee'" sortable="'AssigneeUsername'" filter="{ 'AssigneeUsername': 'text' }">
+                {{issue.Assignee.Username}}
+            </td>
+        </tr>
+    </table>
+</div>
+<div ng-include="'templates/partials/project/edit-project.html'"></div>
+<div ng-include="'templates/partials/issue/add-issue.html'"></div>
