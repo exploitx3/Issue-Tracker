@@ -1,18 +1,28 @@
-app.controller('ProjectsGetAllController', ['$scope', 'projectsService', 'userService', 'notifyService', 'pageSize',
+app.controller('ProjectsGetAllController', [
+    '$scope',
+    'projectsService',
+    'userService',
+    'notifyService',
+    'pageSize',
     function ($scope, projectsService, userService, notifyService, pageSize) {
+        "use strict";
+
         $scope.projectsParams = {
             'startPage': 1,
-            'pageSize': pageSize
+            'pageSize': pageSize -2
         };
 
-        $scope.reloadProjects = function reloadProjects() {
-            projectsService.getAllProjects()
+        $scope.reloadAllProjects = function reloadAllProjects(params) {
+            projectsService.getAllProjectsWithParams(params)
                 .then(function success(data) {
-                    $scope.projects = data;
+                    $scope.projectsParams.numItems = data.TotalCount;
+                    $scope.projects = data.Projects;
                 }, function error(err) {
                     notifyService.showError('Cannot get all projects', err);
-                })
+                });
+
         };
 
-        $scope.reloadProjects();
+        $scope.reloadAllProjects($scope.projectsParams);
+
     }]);

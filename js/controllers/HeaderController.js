@@ -1,5 +1,14 @@
-app.controller('HeaderController', ['$scope', '$route', '$location', 'userService', 'authService', 'projectsService', 'notifyService',
+app.controller('HeaderController', [
+    '$scope',
+    '$route',
+    '$location',
+    'userService',
+    'authService',
+    'projectsService',
+    'notifyService',
     function ($scope, $route, $location, userService, authService, projectsService, notifyService) {
+        "use strict";
+
         $scope.logout = function logout() {
             authService.logout();
             $location.path('/');

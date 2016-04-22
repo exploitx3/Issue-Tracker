@@ -1,9 +1,20 @@
-app.controller('ProjectController', ['$scope', '$route', '$routeParams', '$filter', 'userDataService', 'userService', 'authService', 'issuesService', 'projectsService', 'notifyService', 'pageSize', 'ngTableParams',
-    function ($scope, $route, $routeParams, $filter, userDataService, userService, authService, issuesService, projectsService, notifyService, pageSize, ngTableParams) {
-        $scope.projectsParams = {
-            'startPage': 1,
-            'pageSize': pageSize
-        };
+app.controller('ProjectController', [
+    '$scope',
+    '$route',
+    '$routeParams',
+    '$filter',
+    'userService',
+    'authService',
+    'issuesService',
+    'projectsService',
+    'notifyService',
+    'pageSize',
+    'ngTableParams',
+    function ($scope, $route, $routeParams, $filter, userService, authService, issuesService, projectsService, notifyService, pageSize, ngTableParams) {
+        "use strict";
+
+        $scope.userService = userService;
+
         $scope.getProjectData = function getProjectData() {
             projectsService.getProjectById($routeParams.projectId)
                 .then(function success(data) {
@@ -16,14 +27,14 @@ app.controller('ProjectController', ['$scope', '$route', '$routeParams', '$filte
                             });
                             $scope.issuesTable = new ngTableParams({
                                 page: 1,
-                                count: 10
+                                count: pageSize
                             }, {
                                 total: $scope.projectData.Issues.length,
                                 getData: function ($defer, params) {
                                     $scope.data = params.sorting() ? $filter('orderBy')($scope.projectData.Issues, params.orderBy()) : $scope.projectData.Issues;
                                     $scope.data = params.filter() ? $filter('filter')($scope.data, params.filter()) : $scope.data;
-									this.total = $scope.data.length;
-									$scope.data = $scope.data.slice((params.page() - 1) * params.count(), params.page() * params.count());
+                                    this.total = $scope.data.length;
+                                    $scope.data = $scope.data.slice((params.page() - 1) * params.count(), params.page() * params.count());
                                     $defer.resolve($scope.data);
                                 }
                             });
@@ -141,6 +152,11 @@ app.controller('ProjectController', ['$scope', '$route', '$routeParams', '$filte
 
         $scope.getProjectData();
         $scope.ProjectAdminLeadRights = function () {
-            return authService.isAdmin() || userDataService.isProjectLead($routeParams.projectId);
+            return authService.isAdmin() || userService.isProjectLead($routeParams.projectId);
         };
+
+        $scope.refreshProjectDataAndDatabase = function refreshProjectDataAndDatabase() {
+            userService.updateUserData();
+            $route.reload();
+        }
     }]);

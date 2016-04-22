@@ -1,15 +1,21 @@
 "use strict";
-var app = angular.module('app', ['ngRoute', 'LocalStorageModule', 'ngTable', 'ui.bootstrap.pagination', 'angular-loading-bar']);
+
+var app = angular.module('app', [
+    'ngRoute',
+    'LocalStorageModule',
+    'ngTable',
+    'ui.bootstrap.pagination',
+    'angular-loading-bar']);
 app.constant('baseServiceUrl', 'http://softuni-issue-tracker.azurewebsites.net');
-app.constant('pageSize', 3);
+app.constant('pageSize', 7);
 app.config(function ($routeProvider, localStorageServiceProvider) {
     localStorageServiceProvider
         .setPrefix('issueTrackerData')
         .setStorageType('localStorage');
 
     $routeProvider.when('/', {
-        templateUrl: 'templates/home.html',
-        controller: 'HomeController',
+        templateUrl: 'templates/home-dashboard.html',
+        controller: 'HomeDashboardController',
         title: 'Home'
     });
 
@@ -25,59 +31,26 @@ app.config(function ($routeProvider, localStorageServiceProvider) {
         title: 'Register'
     });
 
-    //$routeProvider.when('/user/ads/publish', {
-    //    templateUrl: 'templates/user/publish-new-ad.html',
-    //    controller: 'UserPublishNewAdController',
-    //    title: 'Publish New Ad'
-    //});
-    //
-    //$routeProvider.when('/user/ads', {
-    //    templateUrl: 'templates/user/user-ads.html',
-    //    controller: 'UserAdsController',
-    //    title: 'My Ad'
-    //});
-    //
-    //
-    //$routeProvider.when('/user/ads/:id/editAd', {
-    //    templateUrl: 'templates/user/edit-ad.html',
-    //    controller: 'UserEditAdController',
-    //    title: 'Edit Ad'
-    //});
-    //
-    //
-    //$routeProvider.when('/user/ads/:id/deleteAd', {
-    //    templateUrl: 'templates/user/delete-ad.html',
-    //    controller: 'UserDeleteAdController',
-    //    title: 'Delete Ad'
-    //});
-
     $routeProvider.when('/profile', {
         templateUrl: 'templates/user/edit-profile.html',
         controller: 'UserEditProfileController',
         title: 'Edit Profile'
     });
 
-    $routeProvider.when('/projects', {
-        templateUrl: 'templates/partial/projects.html',
+    $routeProvider.when('/all-projects', {
+        templateUrl: 'templates/partials/project/all-projects-page.html',
         controller: 'ProjectsGetAllController',
         title: 'Projects'
     });
 
-
-    $routeProvider.when('/projects/add', {
-        templateUrl: 'templates/partial/add-new-project.html',
-        controller: 'AddProjectController',
-        title: 'Add Project'
-    });
-
     $routeProvider.when('/projects/:projectId', {
-        templateUrl: 'templates/partial/project.html',
+        templateUrl: 'templates/partials/project/project-page.html',
         controller: 'ProjectController',
         title: 'Project'
     });
 
     $routeProvider.when('/issues/:issueId', {
-        templateUrl: 'templates/partial/issue.html',
+        templateUrl: 'templates/partials/issue/issue-page.html',
         controller: 'IssueController',
         title: 'Issue'
     });
@@ -92,16 +65,23 @@ app.run(['$rootScope', '$location', 'authService', 'userService', function ($roo
         $rootScope.title = current.$$route.title;
     });
     $rootScope.$on('userLoggedOut', function (event) {
-        userService.clearUserChecks();
+        userService.clearUserData();
     });
     $rootScope.$on('$locationChangeStart', function (event) {
-        if ($location.path().indexOf("/user/") != -1 && !authService.isLoggedIn()) {
+        var profileCheck = $location.path().indexOf("/profile") != -1;
+        var projectCheck = $location.path().indexOf("/project") != -1;
+        var issueCheck = $location.path().indexOf("/issue") != -1;
+        var notLoggedIn = !authService.isLoggedIn();
+        if ((profileCheck || projectCheck || issueCheck) && notLoggedIn) {
+
             $location.path('/');
         }
-        if ($location.path().indexOf("/user/ads") != -1) {
-            $rootScope.showStatuses = true;
-        } else {
-            $rootScope.showStatuses = false;
+    });
+    $rootScope.$on('$locationChangeStart', function (event) {
+        var projectsCheck = $location.path().indexOf("/all-projects") != -1;
+        var notAdmin = !authService.isAdmin();
+        if ((projectsCheck) && notAdmin) {
+            $location.path('/');
         }
     });
 }]);

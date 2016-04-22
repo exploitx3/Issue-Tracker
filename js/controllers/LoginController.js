@@ -1,7 +1,7 @@
-"use strict";
-
 app.controller('LoginController',
     function ($scope, $location, authService, notifyService) {
+        "use strict";
+
         $scope.login = function login(userData) {
             authService.login(userData)
                 .then(function success() {

@@ -1,7 +1,6 @@
-"use strict";
-
 app.controller('UserEditProfileController',
     function ($scope, $location, authService, notifyService) {
+        "use strict";
 
         $scope.getUserProfile = function () {
             $scope.userData = authService.getCurrentUser();
