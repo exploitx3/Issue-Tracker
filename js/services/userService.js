@@ -1,70 +1,34 @@
-"use strict";
+app.factory('userService', [
+    '$http',
+    '$q',
+    'baseServiceUrl',
+    'projectsService',
+    'issuesService',
+    'userDataService',
+    'notifyService',
+    'authService',
+    function ($http, $q, baseServiceUrl, projectsService, issuesService, userDataService, notifyService, authService) {
+        "use strict";
 
-app.factory('userService', function ($http, baseServiceUrl, $q, projectsService, issuesService, userDataService, notifyService, authService) {
-        var userAssignedIssuesProjectObjects, userLeadProjectObjects, userDashboardProjectObjects, userIssues;
-
-        function setUserChecks() {
+        function generateUserData() {
             var defer = $q.defer();
-            userAssignedIssuesProjectObjects = [];
-            userLeadProjectObjects = [];
-            userDashboardProjectObjects = [];
-            userIssues = [];
+            var userAssignedIssuesProjectObjects= [];
+            var userLeadProjectObjects = [];
+            var userDashboardProjectObjects = [];
+            var userIssues = [];
             issuesService.getMyIssues()
                 .then(function (data) {
-
                     userIssues = data.Issues;
+                    var allIssueProjects = userIssues.map(function (issue) {
+                        return issue.Project;
+                    });
+                    userAssignedIssuesProjectObjects = _.uniqWith(allIssueProjects, _.isEqual);
 
-                    data.Issues.map(function (issue) {
-                            return issue.Project;
-                        })
-                        .forEach(function (project) {
-                            var containsProject = false;
-                            for (var i = 0; i < userAssignedIssuesProjectObjects.length; i++) {
-                                if (project.Id === userAssignedIssuesProjectObjects[i].Id) {
-                                    containsProject = true;
-                                    break;
-                                }
-                            }
-                            if (!containsProject) {
-                                userAssignedIssuesProjectObjects.push(project);
-                            }
-                        });
+                    projectsService.getAllProjectsByLeadId(authService.getCurrentUser().Id)
+                        .then(function (projects) {
+                            userLeadProjectObjects = projects.Projects;
 
-                    projectsService.getAllProjects()
-                        .then(function (allProjects) {
-                            var myId = authService.getCurrentUser().Id;
-                            allProjects.forEach(function (project) {
-                                if (project.Lead.Id === myId) {
-                                    userLeadProjectObjects.push(project);
-                                }
-                            });
-
-                            userAssignedIssuesProjectObjects.forEach(function (project) {
-                                var containsProject = false;
-                                for (var i = 0; i < userDashboardProjectObjects.length; i += 1) {
-                                    if (project.Id === userDashboardProjectObjects[i].Id) {
-                                        containsProject = true;
-                                        break;
-                                    }
-                                }
-                                if (!containsProject) {
-                                    userDashboardProjectObjects.push(project);
-                                }
-                            });
-
-                            userLeadProjectObjects.forEach(function (project) {
-                                var containsProject = false;
-                                for (var i = 0; i < userDashboardProjectObjects.length; i += 1) {
-                                    if (project.Id === userDashboardProjectObjects[i].Id) {
-                                        containsProject = true;
-                                        break;
-                                    }
-                                }
-                                if (!containsProject) {
-                                    userDashboardProjectObjects.push(project);
-                                }
-                            });
-
+                            userDashboardProjectObjects = _.uniqWith(userAssignedIssuesProjectObjects.concat(userLeadProjectObjects), _.isEqual);
                             defer.resolve({
                                 userIssues: userIssues,
                                 userAssignedIssuesProjectObjects: userAssignedIssuesProjectObjects,
@@ -81,14 +45,14 @@ app.factory('userService', function ($http, baseServiceUrl, $q, projectsService,
 
 
         return {
-            clearUserChecks: function () {
-                userDataService.clearUserdata();
+            clearUserData: function () {
+                userDataService.clearUserDataInStorage();
             },
-            setUserChecks: function () {
+            setUserData: function () {
                 var defer = $q.defer();
                 if (!userDataService.isDataSet()) {
-                    setUserChecks().then(function (data) {
-                        userDataService.setUserdata(data)
+                    generateUserData().then(function (data) {
+                        userDataService.setUserDataInStorage(data)
                             .then(function () {
                                 defer.resolve();
                             });
@@ -100,15 +64,15 @@ app.factory('userService', function ($http, baseServiceUrl, $q, projectsService,
             },
             updateUserData: function () {
                 var defer = $q.defer();
-                    setUserChecks().then(function (data) {
-                        userDataService.setUserdata(data)
-                            .then(function () {
-                                defer.resolve();
-                            });
-                    });
+                generateUserData().then(function (data) {
+                    userDataService.setUserDataInStorage(data)
+                        .then(function () {
+                            defer.resolve();
+                        });
+                });
                 return defer.promise;
             },
-            getAllUsers: function getAllUsers(success, error) {
+            getAllUsers: function getAllUsers() {
                 var defer = $q.defer();
                 var request = {
                     method: 'GET',
@@ -121,7 +85,55 @@ app.factory('userService', function ($http, baseServiceUrl, $q, projectsService,
                     defer.reject(err);
                 });
                 return defer.promise;
+            },
+            isProjectLead: function isProjectLead(projectId) {
+                var userLeadProjectObjects = userDataService.getUserLeadProjectObjects();
+                var containsProject = false;
+                for (var i = 0; i < userLeadProjectObjects.length; i++) {
+                    if (Number(projectId) === userLeadProjectObjects[i].Id) {
+                        containsProject = true;
+                        break;
+                    }
+                }
+                return containsProject;
+
+
+            },
+            hasAssignedIssueInProject: function hasAssignedIssueInProject(projectId) {
+                var userAssignedIssuesProjectObjects = userDataService.getUserAssignedIssuesProjectObjects();
+                return (userAssignedIssuesProjectObjects
+                        .map(function (project) {
+                            return project.Id;
+                        })
+                        .indexOf(projectId)) !== -1;
+
+            },
+            isIssueAssignee: function isIssueAssignee(issueId) {
+                var userIssues = userDataService.getUserIssues();
+                var containsIssue = false;
+                for (var i = 0; i < userIssues.length; i++) {
+                    if (Number(issueId) === userIssues[i].Id) {
+                        containsIssue = true;
+                        break;
+                    }
+                }
+                return containsIssue;
+
+            },
+            getProjectLeadById: function (projectId) {
+                var userLeadProjectObjects = userDataService.getUserLeadProjectObjects();
+                var project;
+                for (var i = 0; i < userLeadProjectObjects.length; i++) {
+                    if (Number(projectId) === userLeadProjectObjects[i].Id) {
+                        project = userLeadProjectObjects[i];
+                        break;
+                    }
+                }
+                return project;
+            },
+            getAffiliatedProjects: function () {
+                return userDataService.getUserDashboardProjectObjects();
             }
         }
-    }
+    }]
 );

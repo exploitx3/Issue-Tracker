@@ -1,6 +1,6 @@
-"use strict";
+app.factory('notifyService', [function () {
+    "use strict";
 
-app.factory('notifyService', function () {
     return {
         showInfo: function showInfo(msg) {
             noty({
@@ -38,4 +38,4 @@ app.factory('notifyService', function () {
             });
         }
     }
-});
+}]);
