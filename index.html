@@ -2,35 +2,34 @@
 <html lang="en" ng-app="app" ng-controller="AppController">
 <head>
     <link rel="stylesheet" href="css/app.css">
+    <link rel="stylesheet" href="css/bootstrap.css">
     <link rel="stylesheet" href="css/bootstrap-sandstone.css">
     <link rel="stylesheet" href="css/loading-bar.css">
     <link rel="stylesheet" href="css/homeButtons.css">
     <link rel="stylesheet" href="css/ng-table.css">
     <meta charset="UTF-8">
-    <title>Ads</title>
+    <title>Issue-Tracker</title>
 </head>
 <body>
 <nav ng-controller="HeaderController" id="app-header">
-    <div ng-include="'templates/partial/header.html'"></div>
+    <div ng-include="'templates/partials/header.html'"></div>
 </nav>
 
-<div id="app-content">
+<div ng-cloak id="app-content">
     <div class="col-md-12" ng-view></div>
-
-    <!--<div class="col-md-2 sidebar" ng-controller="RightSidebarController">-->
-        <!--<div ng-include="'templates/partial/right-sidebar.html'"></div>-->
-    <!--</div>-->
 </div>
-
 <footer id="app-footer">
     &copy; 2016 by Software University Foundation, No Rights Reserved
 </footer>
+
+
 <script src="libs/angular/angular.js"></script>
 <script src="libs/angular/angular-route.js"></script>
 <script src="libs/jquery/jquery-2.1.3.js"></script>
 <script src="libs/loading-bar.js"></script>
 <script src="libs/ng-table.js"></script>
 <script src="libs/angular-local-storage.js"></script>
+<script src="libs/lodash.js"></script>
 <!--<script src="libs/jquery.sticky.js"></script>-->
 <!--<script>-->
     <!--$(document).ready(function(){-->
@@ -51,7 +50,7 @@
 <script src="js/services/userDataService.js"></script>
 
 <script src="js/controllers/AppController.js"></script>
-<script src="js/controllers/HomeController.js"></script>
+<script src="js/controllers/HomeDashboardController.js"></script>
 <script src="js/controllers/HeaderController.js"></script>
 <script src="js/controllers/ProjectsGetAllController.js"></script>
 <script src="js/controllers/ProjectController.js"></script>

@@ -1090,7 +1090,7 @@ body {
   font-size: 14px;
   line-height: 1.42857143;
   color: #3e3f3a;
-  background-color: #ffffff;
+
 }
 input,
 button,
@@ -3625,6 +3625,7 @@ tbody.collapse.in {
   right: 0;
   left: auto;
 }
+
 .dropup .caret,
 .navbar-fixed-bottom .dropdown .caret {
   border-top: 0;
