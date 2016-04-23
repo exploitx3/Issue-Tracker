@@ -14,7 +14,7 @@ app.controller('UserEditProfileController',
                 .then(
                 function success() {
                     notifyService.showInfo('User Successfully Changed Password!');
-                    $location.path('#/');
+                    $location.path('/');
                 },
                 function error(err) {
                     notifyService.showError('User password edit failed', err);
