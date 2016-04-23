@@ -1,4 +1,4 @@
-app.controller('ProjectsGetAllController', [
+app.controller('AllProjectsController', [
     '$scope',
     'projectsService',
     'userService',

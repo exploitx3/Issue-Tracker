@@ -1,0 +1,13 @@
+<h2>All Projects</h2>
+<ul ng-cloak class="list-group projects-style">
+    <li ng-repeat="project in projects" class="list-group-item">
+        <h3><a href="#/projects/{{project.Id}}">{{project.Name}}</a></h3>
+    </li>
+</ul>
+
+<div ng-if="projects.length==0" class="box no-data">
+    No projects found.
+</div>
+
+<pagination ng-cloak total-items="projectsParams.numItems" ng-model="projectsParams.startPage" items-per-page="projectsParams.pageSize"
+            ng-change="reloadAllProjects(projectsParams)" max-size="9" boundary-links="true"></pagination>

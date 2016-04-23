@@ -14,9 +14,9 @@ app.controller('IssueController', [
     function ($scope, $route, $routeParams, $filter, $q, authService, issuesService, userService, projectsService, notifyService, pageSize) {
         "use strict";
 
-        $scope.issueParams = {
+        $scope.commentsParams = {
             startPage: 1,
-            pageSize: pageSize - 3
+            pageSize: pageSize - 2
         };
 
         $scope.userService = userService;
@@ -29,9 +29,9 @@ app.controller('IssueController', [
                     $scope.issueData = data;
                     issuesService.getIssueCommentsById($routeParams.issueId)
                         .then(function success(data) {
-                            $scope.issueComments = data.slice(0, $scope.issueParams.pageSize);
+                            $scope.issueComments = data.slice(0, $scope.commentsParams.pageSize);
                             _issueComments = data;
-                            $scope.issueParams.numItems = data.length;
+                            $scope.commentsParams.numItems = data.length;
                             defer.resolve();
                         })
                 }, function error(err) {
@@ -42,7 +42,7 @@ app.controller('IssueController', [
         };
 
         $scope.reloadIssueComments = function reloadIssueComments() {
-            $scope.issueComments = _issueComments.slice(($scope.issueParams.startPage - 1) * $scope.issueParams.pageSize, ($scope.issueParams.startPage - 1) * $scope.issueParams.pageSize + $scope.issueParams.pageSize);
+            $scope.issueComments = _issueComments.slice(($scope.commentsParams.startPage - 1) * $scope.commentsParams.pageSize, ($scope.commentsParams.startPage - 1) * $scope.commentsParams.pageSize + $scope.commentsParams.pageSize);
         };
 
         $scope.changeIssueStatus = function changeIssueStatus(statusId) {
@@ -55,7 +55,7 @@ app.controller('IssueController', [
         $scope.addComment = function addComment(text) {
             issuesService.addComment($routeParams.issueId, text)
                 .then(
-                    function success(newComments) {
+                    function success() {
                         $route.reload();
                     },
                     function error(err) {
@@ -91,9 +91,6 @@ app.controller('IssueController', [
                     };
                     jQuery('#edit-issue-modal').modal('show');
                 });
-
-
-
 
             $scope.editIssue = function(data){
                 var formattedIssueData = {

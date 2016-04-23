@@ -38,19 +38,19 @@ app.config(function ($routeProvider, localStorageServiceProvider) {
     });
 
     $routeProvider.when('/all-projects', {
-        templateUrl: 'templates/partials/project/all-projects-page.html',
-        controller: 'ProjectsGetAllController',
+        templateUrl: 'templates/project/all-projects-page.html',
+        controller: 'AllProjectsController',
         title: 'Projects'
     });
 
     $routeProvider.when('/projects/:projectId', {
-        templateUrl: 'templates/partials/project/project-page.html',
+        templateUrl: 'templates/project/project-page.html',
         controller: 'ProjectController',
         title: 'Project'
     });
 
     $routeProvider.when('/issues/:issueId', {
-        templateUrl: 'templates/partials/issue/issue-page.html',
+        templateUrl: 'templates/issue/issue-page.html',
         controller: 'IssueController',
         title: 'Issue'
     });
@@ -76,8 +76,7 @@ app.run(['$rootScope', '$location', 'authService', 'userService', function ($roo
 
             $location.path('/');
         }
-    });
-    $rootScope.$on('$locationChangeStart', function (event) {
+
         var projectsCheck = $location.path().indexOf("/all-projects") != -1;
         var notAdmin = !authService.isAdmin();
         if ((projectsCheck) && notAdmin) {

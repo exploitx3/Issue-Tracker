@@ -1,6 +1,6 @@
 <div class="col-md-4">
     <h1>Project - Info</h1>
-    <ul  ng-if="!(authService.isAdmin() || (projectData.Lead.Id === authService.getCurrentUser().Id))" ng-cloak class="list-group">
+    <ul  ng-if="!(authService.isAdmin() || userService.isProjectLead(projectData.Id))" ng-cloak class="list-group">
         <h1>{{projectData.Name}}</h1>
         <label for="projectKey">Project key:</label>
         <span id="projectKey">{{projectData.ProjectKey}}</span><br>
@@ -19,7 +19,7 @@
             <li ng-repeat="priority in projectData.Priorities">{{priority.Name}}</li>
         </ul>
     </ul>
-    <ul ng-if="authService.isAdmin() || (projectData.Lead.Id === authService.getCurrentUser().Id)" ng-cloak class="list-group">
+    <ul ng-if="authService.isAdmin() || userService.isProjectLead(projectData.Id)" ng-cloak class="list-group">
 
         <h1>{{projectData.Name}}</h1>
         <label for="projectKey">Project key:</label>
@@ -47,6 +47,7 @@
     </ul>
 </div>
 <div class="col-md-8">
+    <button class="btn" ng-click="refreshProjectDataAndDatabase()" id="Refresh"><span class="glyphicon glyphicon-refresh"> Refresh</span></button>
     <h1>Project - Issues</h1>
     <table ng-table="issuesTable" show-filter="true" class="table table-striped">
         <tr ng-repeat="issue in data">
@@ -65,5 +66,5 @@
         </tr>
     </table>
 </div>
-<div ng-include="'templates/partial/edit-project.html'"></div>
-<div ng-include="'templates/partial/add-issue.html'"></div>
+<div ng-include="'templates/project/edit-project.html'"></div>
+<div ng-include="'templates/issue/add-issue.html'"></div>

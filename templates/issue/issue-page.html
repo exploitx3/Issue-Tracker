@@ -43,7 +43,7 @@
     </span></h1>
     <ul ng-cloak class="list-group">
 
-        <pagination ng-cloak total-items="issueParams.numItems" ng-model="issueParams.startPage" items-per-page="issueParams.pageSize"
+        <pagination ng-cloak total-items="commentsParams.numItems" ng-model="commentsParams.startPage" items-per-page="commentsParams.pageSize"
                     ng-change="reloadIssueComments()" max-size="3" boundary-links="true"></pagination>
         <div class="panel panel-primary" ng-repeat="issueComment in issueComments">
             <div class="panel-heading">
@@ -64,4 +64,4 @@
     </ul>
 </div>
 
-<div ng-if="userService.isProjectLead(issueData.Project.Id) || authService.isAdmin()" ng-include="'templates/partials/issue/edit-issue.html'"></div>
+<div ng-if="userService.isProjectLead(issueData.Project.Id) || authService.isAdmin()" ng-include="'templates/issue/edit-issue.html'"></div>
